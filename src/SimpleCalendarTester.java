@@ -10,7 +10,9 @@ public class SimpleCalendarTester {
         frame.setLayout(new BorderLayout());
         frame.setSize(FRAME_WIDTH,FRAME_HEIGHT);
 
-        CalendarView calendarView = new CalendarView();
+        CalendarContentModel calendarContent = new CalendarContentModel();
+        CalendarView calendarView = new CalendarView(calendarContent);
+        calendarContent.attachListener(calendarView);
 
         frame.add(calendarView, BorderLayout.CENTER);
         frame.setVisible(true);

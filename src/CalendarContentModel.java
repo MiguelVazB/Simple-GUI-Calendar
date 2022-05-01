@@ -1,12 +1,16 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+import javax.swing.event.ChangeListener;
+import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class CalendarContentModel {
 
-    private HashMap<Day, Month> calendarContent;
+    private HashMap<Month, Day> calendarContent;
+    private ArrayList<ChangeListener> listeners = new ArrayList<>();
 
     public CalendarContentModel(){
         calendarContent = new HashMap<>();
@@ -14,7 +18,8 @@ public class CalendarContentModel {
     }
 
     private void generateEventsFromFile(){
-        File eventsFile = new File("events.txt");
+        String fileName = "events.txt";
+        File eventsFile = new File(fileName);
         //content separated by ////~
         ArrayList<String> csContent = new ArrayList<>();
         Scanner input = null;
@@ -22,6 +27,11 @@ public class CalendarContentModel {
             input = new Scanner(eventsFile);
         } catch (FileNotFoundException e) {
             System.out.println("File not found!\nCreating empty calendar.....");
+            try {
+                createEventsFile(fileName);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
         if (input==null){
             return;
@@ -34,9 +44,24 @@ public class CalendarContentModel {
         for (String event: csContent){
             String[] eventInfo = event.split("////~");
         }
+
+        //serialization
+//        try {
+//            FileOutputStream file = new FileOutputStream("file.ser");
+//            ObjectOutputStream out = new ObjectOutputStream(file);
+//            out.writeObject(new Event(LocalTime.now(), "hello"));
+//            out.close();
+//            file.close();
+//        }catch (IOException ex){
+//            System.out.println("naaaaaaah");
+//        }
     }
 
-    public HashMap<Day, Month> getCalendarContent() {
-        return calendarContent;
+    private void createEventsFile(String fileName) throws IOException {
+        new FileOutputStream(fileName).close();
+    }
+
+    public void attachListener(ChangeListener listener){
+        this.listeners.add(listener);
     }
 }
