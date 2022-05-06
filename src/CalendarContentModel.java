@@ -1,20 +1,22 @@
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.io.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.*;
+import java.util.*;
 
 public class CalendarContentModel {
 
-    private HashMap<Month, Day> calendarContent;
+    private ArrayList<Day> calendarDays;
+    private LocalDate currentDateDisplayed;
     private ArrayList<ChangeListener> listeners = new ArrayList<>();
 
     public CalendarContentModel(){
-        calendarContent = new HashMap<>();
-        generateEventsFromFile();
+        calendarDays = new ArrayList<>();
+        this.currentDateDisplayed = LocalDate.now();
+//        generateEventsFromFile();
     }
 
     private void generateEventsFromFile(){
@@ -59,6 +61,29 @@ public class CalendarContentModel {
 
     private void createEventsFile(String fileName) throws IOException {
         new FileOutputStream(fileName).close();
+    }
+
+    public void addEventToCalendar(Day day){
+        if (day == null){
+            return;
+        }
+        if (!this.calendarDays.isEmpty()) {
+            for (Day dayContent : calendarDays){
+                System.out.println(dayContent.getDate());
+            }
+        }
+        this.calendarDays.add(day.getDate().getMonthValue(), day);
+    }
+
+    public LocalDate getCurrentDate(){
+        return this.currentDateDisplayed;
+    }
+
+    public void setCurrentDate(LocalDate currentDate){
+        this.currentDateDisplayed = currentDate;
+        for (ChangeListener listener : listeners){
+            listener.stateChanged(new ChangeEvent(currentDate));
+        }
     }
 
     public void attachListener(ChangeListener listener){
