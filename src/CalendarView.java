@@ -9,6 +9,14 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
+/**
+ * CalendarView
+ * @author Miguel Vazquez
+ * @version 1.0 5/6/22
+ *
+ * Displays the month calendar
+ */
+
 public class CalendarView extends JPanel implements ChangeListener{
 
     private final CalendarContentModel calendarContentModel;
@@ -16,12 +24,18 @@ public class CalendarView extends JPanel implements ChangeListener{
     private JLabel currentSelectedDay;
     private LocalDate currentDateDisplayed;
 
+    /**
+     * @param calendarContent days with events in calendar
+     */
     CalendarView(CalendarContentModel calendarContent){
         this.setLayout(new BorderLayout());
         this.calendarContentModel = calendarContent;
         displayMonthCalendar();
     }
 
+    /**
+     * Display month with JPanels and JLabels
+     */
     public void displayMonthCalendar(){
 
         currentDateDisplayed = this.calendarContentModel.getCurrentDate();
@@ -92,7 +106,7 @@ public class CalendarView extends JPanel implements ChangeListener{
         monthGridPanel.addMouseListener(new MouseAdapter() {
 
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {    //paint border of selected day
                 JLabel dayPressed = (JLabel) monthGridPanel.getComponentAt(e.getX(),e.getY());
                 if (selectableLabel(dayPressed.getText())) {
                     if (currentSelectedDay != null){
@@ -108,6 +122,10 @@ public class CalendarView extends JPanel implements ChangeListener{
         });
     }
 
+    /**
+     * @param keyPressed value of JLabel pressed
+     * @return false if non clickable JLabel
+     */
     private boolean selectableLabel(String keyPressed){
         if (keyPressed.isEmpty()){
             return false;

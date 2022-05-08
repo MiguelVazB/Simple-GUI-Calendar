@@ -5,6 +5,15 @@ import java.io.*;
 import java.time.*;
 import java.util.*;
 
+/**
+ * CalendarContentModel
+ * @author Miguel Vazquez
+ * @version 1.0 5/6/22
+ *
+ * It contains the events of the calendar. It has and arraylist of listeners. it has an arraylist of days.
+ * It also has the current date and a counter of days.
+ */
+
 public class CalendarContentModel{
 
     private final ArrayList<Day> calendarEvents;
@@ -18,6 +27,9 @@ public class CalendarContentModel{
         generateEventsFromFile();
     }
 
+    /**
+     * generate calendar events from events.txt
+     */
     private void generateEventsFromFile() {
 
         FileInputStream fileInput;
@@ -38,7 +50,7 @@ public class CalendarContentModel{
         boolean empty = false;
         ArrayList<Day> days = new ArrayList<>();
         try{
-            ObjectInputStream inputStream = new ObjectInputStream(fileInput);
+            ObjectInputStream inputStream = new ObjectInputStream(fileInput);       //read using deserialization
             while(!empty){
                 Day existingDay = null;
                 if (fileInput.available() != 0){
@@ -75,10 +87,10 @@ public class CalendarContentModel{
         }
     }
 
-    private void createEventsFile(String fileName) throws IOException {
-        new FileOutputStream(fileName).close();
-    }
-
+    /**
+     * @param newEvent event to be added
+     * @param date day to add event to
+     */
     public void addDayToCalendar(Event newEvent, LocalDate date){
         if (!calendarEvents.isEmpty()) {
             boolean noEventConflict;
@@ -107,10 +119,16 @@ public class CalendarContentModel{
         }
     }
 
+    /**
+     * @return current date
+     */
     public LocalDate getCurrentDate(){
         return this.currentDate;
     }
 
+    /**
+     * @param currentDate change current date
+     */
     public void setCurrentDate(LocalDate currentDate){
         this.currentDate = currentDate;
         for (ChangeListener listener : listeners){
@@ -118,17 +136,23 @@ public class CalendarContentModel{
         }
     }
 
+    /**
+     * @return get elements in calendar
+     */
     public int getElementsInCalendar() {
-        for(Day day: calendarEvents){
-            day.displayEvents();
-        }
         return elementsInCalendar;
     }
 
+    /**
+     * @param listener ChangeListener to update views
+     */
     public void attachListener(ChangeListener listener){
         this.listeners.add(listener);
     }
 
+    /**
+     * @return return arraylist of days in the calendar
+     */
     public ArrayList<Day> getCalendarEvents() {
         return calendarEvents;
     }

@@ -2,16 +2,31 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * Day
+ * @author Miguel Vazquez
+ * @version 1.0 5/6/22
+ *
+ * Contains events in day. Also, it checks for time conflicts
+ */
+
 public class Day implements Serializable {
 
     private final ArrayList<Event> dayEvents;
     private LocalDate date;
 
+    /**
+     * @param currentDate current date
+     */
     public Day(LocalDate currentDate) {
         this.date = currentDate;
         dayEvents = new ArrayList<>();
     }
 
+    /**
+     * @param newEvent event to be added
+     * @return false if conflicting time
+     */
     public boolean addEventToDay(Event newEvent){
         if (!dayEvents.isEmpty()) {
             for (Event event : dayEvents) {
@@ -34,16 +49,16 @@ public class Day implements Serializable {
         return true;
     }
 
+    /**
+     * @return current date
+     */
     public LocalDate getDate() {
         return date;
     }
 
-    public void displayEvents(){
-        for(Event event: dayEvents){
-            System.out.println(event.getDayOfEvent() +" "+ event.getEventTitle() +" "+ event.getStartingTime() +" "+ event.getEndingTime());
-        }
-    }
-
+    /**
+     * @return return events in current day
+     */
     public ArrayList<Event> getDayEvents() {
         return dayEvents;
     }

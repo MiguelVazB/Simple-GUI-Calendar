@@ -3,13 +3,18 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Locale;
+
+/**
+ * DayView
+ * @author Miguel Vazquez
+ * @version 1.0 5/6/22
+ *
+ * Displays current day and all the times and events in current day
+ */
 
 public class DayView extends JPanel implements ChangeListener {
 
@@ -18,13 +23,19 @@ public class DayView extends JPanel implements ChangeListener {
     private JPanel eventsPanel;
     private boolean colorChange = false;
 
+    /**
+     * @param calendarContent calendar events
+     */
     public DayView(CalendarContentModel calendarContent) {
         this.setLayout(new BorderLayout());
         this.calendarContent = calendarContent;
         displayCurrentDay();
     }
 
-    private void displayCurrentDay() {                          ///////////////////////////////////////////////////////////////
+    /**
+     * Display current day with the structure of the events
+     */
+    private void displayCurrentDay() {
         currentDay = calendarContent.getCurrentDate();
         String formattedDay = currentDay.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH)
                 + " " + currentDay.getMonthValue() + "/" + currentDay.getDayOfMonth();
@@ -46,6 +57,7 @@ public class DayView extends JPanel implements ChangeListener {
                 timeOfDay = "pm";
                 afterNoon = 12;
             }
+            //display structure of events in current day
             eventTime = new JLabel(i-afterNoon+" "+timeOfDay, SwingConstants.CENTER);
             eventTime.setBackground(Color.WHITE);
             eventTime.setOpaque(true);
@@ -64,7 +76,7 @@ public class DayView extends JPanel implements ChangeListener {
             eventsTitlePanel.add(twoRows);
         }
 
-        this.eventsPanel = eventsTitlePanel;
+        this.eventsPanel = eventsTitlePanel;       //panel with events
 
         this.add(currentDayDisplay, BorderLayout.NORTH);
         this.add(eventsTimePanel, BorderLayout.LINE_START);
@@ -85,10 +97,10 @@ public class DayView extends JPanel implements ChangeListener {
         ArrayList<Event> dayEvents = null;
         for (Day day : calendarContent.getCalendarEvents()){
             if (day.getDate().isEqual(currentDay)) {
-                dayEvents = day.getDayEvents();
+                dayEvents = day.getDayEvents();     //if equal day it finds existing events
             }
         }
-        if (dayEvents != null) {
+        if (dayEvents != null) {    //paint current events
             for (Event event : dayEvents) {
                 int starting = event.getStartingTime().getHour();
                 int ending = event.getEndingTime().getHour();

@@ -1,6 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * SimpleCalendarTester
+ * @author Miguel Vazquez
+ * @version 1.0 5/6/22
+ *
+ * The calendar app runs from here. The main method initializes all classes and displays the calendar
+ * using CalendarView and DayView to display the current calendar and current events
+ */
+
 public class SimpleCalendarTester {
     private static final int FRAME_WIDTH = 1000;
     private static final int FRAME_HEIGHT = 250;
@@ -18,7 +27,7 @@ public class SimpleCalendarTester {
         EventCreation eventCreation = new EventCreation(calendarContent);
         SaveEventsAndQuit quitButton = new SaveEventsAndQuit(calendarContent);
 
-        JScrollPane scrollPane = new JScrollPane(dayView);
+        JScrollPane scrollPane = new JScrollPane(dayView);  //added dayView to scrollPane to scroll down to all times
         scrollPane.setBorder(null);
 
         calendarContent.attachListener(calendarView);
