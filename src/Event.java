@@ -1,13 +1,13 @@
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
-public class Event {
+public class Event implements Serializable {
 
-    private LocalTime startingTime;
-    private LocalTime endingTime;
-    private LocalDate date;
-    private String eventTitle;
+    private final LocalTime startingTime;
+    private final LocalTime endingTime;
+    private final LocalDate date;
+    private final String eventTitle;
 
     public Event(LocalDate date, LocalTime startingTime, LocalTime endingTime, String eventTitle) {
         this.date = date;
@@ -26,5 +26,9 @@ public class Event {
 
     public LocalDate getDayOfEvent(){
         return this.date;
+    }
+
+    public String getEventTitle(){
+        return eventTitle;
     }
 }

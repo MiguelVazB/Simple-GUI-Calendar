@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class SimpleCalendarTester {
@@ -16,6 +15,8 @@ public class SimpleCalendarTester {
         CalendarView calendarView = new CalendarView(calendarContent);
         DayView dayView = new DayView(calendarContent);
         BackAndForwardButtons backAndForwardButtons = new BackAndForwardButtons(calendarContent);
+        EventCreation eventCreation = new EventCreation(calendarContent);
+        SaveEventsAndQuit quitButton = new SaveEventsAndQuit(calendarContent);
 
         JScrollPane scrollPane = new JScrollPane(dayView);
         scrollPane.setBorder(null);
@@ -23,7 +24,12 @@ public class SimpleCalendarTester {
         calendarContent.attachListener(calendarView);
         calendarContent.attachListener(dayView);
 
-        frame.add(backAndForwardButtons, BorderLayout.NORTH);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(backAndForwardButtons, BorderLayout.CENTER);
+        topPanel.add(eventCreation, BorderLayout.WEST);
+        topPanel.add(quitButton, BorderLayout.EAST);
+
+        frame.add(topPanel, BorderLayout.NORTH);
         frame.add(calendarView, BorderLayout.LINE_START);
         frame.add(scrollPane, BorderLayout.CENTER);
 

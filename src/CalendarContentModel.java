@@ -1,92 +1,135 @@
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.time.*;
 import java.util.*;
 
-public class CalendarContentModel {
+public class CalendarContentModel{
 
-    private ArrayList<Day> calendarDays;
-    private LocalDate currentDateDisplayed;
-    private ArrayList<ChangeListener> listeners = new ArrayList<>();
+    private final ArrayList<Day> calendarEvents;
+    private LocalDate currentDate;
+    private final ArrayList<ChangeListener> listeners = new ArrayList<>();
+    private int elementsInCalendar = 0;
 
     public CalendarContentModel(){
-        calendarDays = new ArrayList<>();
-        this.currentDateDisplayed = LocalDate.now();
-//        generateEventsFromFile();
+        calendarEvents = new ArrayList<>();
+        this.currentDate = LocalDate.now();
+        generateEventsFromFile();
     }
 
-    private void generateEventsFromFile(){
-        String fileName = "events.txt";
-        File eventsFile = new File(fileName);
-        //content separated by ////~
-        ArrayList<String> csContent = new ArrayList<>();
-        Scanner input = null;
+    private void generateEventsFromFile() {
+
+        FileInputStream fileInput;
         try {
-            input = new Scanner(eventsFile);
+            fileInput = new FileInputStream("events.txt");
         } catch (FileNotFoundException e) {
-            System.out.println("File not found!\nCreating empty calendar.....");
-            try {
-                createEventsFile(fileName);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        if (input==null){
+            System.out.println("events file not found!");
             return;
         }
-        while (input.hasNextLine()){
-            csContent.add(input.nextLine());
+        try {
+            if (fileInput.available() == 0){
+                System.out.println("empty events file!");
+                return;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        input.close();
-
-        for (String event: csContent){
-            String[] eventInfo = event.split("////~");
+        boolean empty = false;
+        ArrayList<Day> days = new ArrayList<>();
+        try{
+            ObjectInputStream inputStream = new ObjectInputStream(fileInput);
+            while(!empty){
+                Day existingDay = null;
+                if (fileInput.available() != 0){
+                    Object inputObject = inputStream.readObject();
+                    Day day = (Day) inputObject;
+                    if (!days.isEmpty()){
+                        for (Day existingDayInDays : days){
+                            if (existingDayInDays.getDate().isEqual(day.getDate())){
+                                existingDay = existingDayInDays;
+                            }
+                        }
+                        if (existingDay != null){
+                            Event event = day.getDayEvents().get(0);
+                            existingDay.addEventToDay(event);
+                        }else{
+                            Event eventNew = day.getDayEvents().get(0);
+                            day.addEventToDay(eventNew);
+                            days.add(day);
+                            elementsInCalendar++;
+                        }
+                    }else{
+                        days.add(day);
+                    }
+                }else{
+                    fileInput.close();
+                    inputStream.close();
+                    empty = true;
+                    elementsInCalendar++;
+                }
+            }
+            calendarEvents.addAll(days);
+        } catch (ClassNotFoundException | IOException exception) {
+            exception.printStackTrace();
         }
-
-        //serialization
-//        try {
-//            FileOutputStream file = new FileOutputStream("file.ser");
-//            ObjectOutputStream out = new ObjectOutputStream(file);
-//            out.writeObject(new Event(LocalTime.now(), "hello"));
-//            out.close();
-//            file.close();
-//        }catch (IOException ex){
-//            System.out.println("naaaaaaah");
-//        }
     }
 
     private void createEventsFile(String fileName) throws IOException {
         new FileOutputStream(fileName).close();
     }
 
-    public void addEventToCalendar(Day day){
-        if (day == null){
-            return;
-        }
-        if (!this.calendarDays.isEmpty()) {
-            for (Day dayContent : calendarDays){
-                System.out.println(dayContent.getDate());
+    public void addDayToCalendar(Event newEvent, LocalDate date){
+        if (!calendarEvents.isEmpty()) {
+            boolean noEventConflict;
+            Day existingDay = null;
+            for (Day day : calendarEvents) {
+                if (day.getDate().isEqual(date)) {
+                    existingDay = day;
+                }
             }
+            if (existingDay != null) {          //day found
+                noEventConflict = existingDay.addEventToDay(newEvent);  //check if conflict
+                if (!noEventConflict) {  //if conflicting event
+                    JOptionPane.showMessageDialog(null, "Time Conflict with another event!");
+                }
+            } else {    //day not found
+                Day newDay = new Day(date);
+                newDay.addEventToDay(newEvent);
+                calendarEvents.add(newDay);
+                elementsInCalendar++;
+            }
+        }else{
+            Day newDay = new Day(date);
+            newDay.addEventToDay(newEvent);
+            calendarEvents.add(newDay);
+            elementsInCalendar++;
         }
-        this.calendarDays.add(day.getDate().getMonthValue(), day);
     }
 
     public LocalDate getCurrentDate(){
-        return this.currentDateDisplayed;
+        return this.currentDate;
     }
 
     public void setCurrentDate(LocalDate currentDate){
-        this.currentDateDisplayed = currentDate;
+        this.currentDate = currentDate;
         for (ChangeListener listener : listeners){
             listener.stateChanged(new ChangeEvent(currentDate));
         }
     }
 
+    public int getElementsInCalendar() {
+        for(Day day: calendarEvents){
+            day.displayEvents();
+        }
+        return elementsInCalendar;
+    }
+
     public void attachListener(ChangeListener listener){
         this.listeners.add(listener);
+    }
+
+    public ArrayList<Day> getCalendarEvents() {
+        return calendarEvents;
     }
 }

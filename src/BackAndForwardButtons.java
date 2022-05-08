@@ -17,20 +17,15 @@ public class BackAndForwardButtons extends JPanel {
     private void displayButtons(){
         JButton backButton = new JButton("<");
         backButton.setHorizontalTextPosition(JButton.CENTER);
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LocalDate previousDate = calendarContent.getCurrentDate();
-                calendarContent.setCurrentDate(previousDate.minusDays(1));
-            }
+        backButton.addActionListener(e -> {
+            LocalDate previousDate = calendarContent.getCurrentDate();
+            calendarContent.setCurrentDate(previousDate.minusDays(1));
         });
         JButton forwardButton = new JButton(">");
         forwardButton.setHorizontalTextPosition(JButton.CENTER);
-        forwardButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("hello there Im forward button");
-            }
+        forwardButton.addActionListener(e -> {
+            LocalDate previousDate = calendarContent.getCurrentDate();
+            calendarContent.setCurrentDate(previousDate.plusDays(1));
         });
 
         this.add(backButton);
