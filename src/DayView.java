@@ -116,10 +116,13 @@ public class DayView extends JPanel implements ChangeListener {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.fill(rec);
 <<<<<<< HEAD
+<<<<<<< HEAD
                 float eventTitleXPosition = (float) rec.getCenterX();
                 float eventTitleYPosition = (float) rec.getCenterY();
                 g2.setColor(Color.BLACK);
                 g2.drawString(event.getEventTitle(), eventTitleXPosition, eventTitleYPosition);
+=======
+>>>>>>> parent of 4298f8f (Merge pull request #2 from MiguelVazB/updatingGUI)
 =======
 >>>>>>> parent of 4298f8f (Merge pull request #2 from MiguelVazB/updatingGUI)
             }
