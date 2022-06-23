@@ -94,7 +94,7 @@ public class DayView extends JPanel implements ChangeListener {
         updateUI();
     }
 
-    //paint() is used to pain the events on top of the dat view
+    //paint() is used to pain the events on top of the day view
     @Override
     public void paint(Graphics g) {
         super.paint(g);
