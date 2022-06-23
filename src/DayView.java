@@ -3,6 +3,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ public class DayView extends JPanel implements ChangeListener {
     private LocalDate currentDay;
     private JPanel eventsPanel;
     private boolean colorChange = false;
+    //size of event times displayed each day
+    private final Dimension sizeOfTimesOFDay = new Dimension(35,35);
 
     /**
      * @param calendarContent calendar events
@@ -62,7 +65,8 @@ public class DayView extends JPanel implements ChangeListener {
             eventTime.setBackground(Color.WHITE);
             eventTime.setOpaque(true);
             eventTime.setBorder(new LineBorder(Color.LIGHT_GRAY));
-            eventTime.setPreferredSize(new Dimension(60,60));
+
+            eventTime.setPreferredSize(sizeOfTimesOFDay);
             eventsTimePanel.add(eventTime);
 
             JPanel twoRows = new JPanel();
@@ -91,9 +95,8 @@ public class DayView extends JPanel implements ChangeListener {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Component[] events = eventsPanel.getComponents();
+    public void paint(Graphics g) {
+        super.paint(g);
         ArrayList<Event> dayEvents = null;
         for (Day day : calendarContent.getCalendarEvents()){
             if (day.getDate().isEqual(currentDay)) {
@@ -102,25 +105,51 @@ public class DayView extends JPanel implements ChangeListener {
         }
         if (dayEvents != null) {    //paint current events
             for (Event event : dayEvents) {
-                int starting = event.getStartingTime().getHour();
-                int ending = event.getEndingTime().getHour();
-                int titlePosition = starting;
-                while (starting < ending) {
-                    if (!colorChange) {
-                        events[starting].setBackground(Color.ORANGE);
-                    }else{
-                        events[starting].setBackground(new Color(247, 176, 45));
-                    }
-                    JLabel title2 = (JLabel) events[starting].getComponentAt(0,30);
-                    title2.setBorder(null);
-                    starting++;
-                }
-                JLabel title = (JLabel) events[titlePosition].getComponentAt(0,30);
-                title.setText(event.getEventTitle());
-                if (dayEvents.size() > 1) {
-                    colorChange = !colorChange;
-                }
+                System.out.println(event.getStartingTime());
+                int totalMinutes = event.getStartingTime().getHour()*60 + event.getStartingTime().getMinute();   //get minutes
+                double yPosition = (eventsPanel.getHeight()*sizeOfTimesOFDay.getHeight())/totalMinutes;
+                System.out.println(yPosition);
+
+                //event displayed on top of component
+                Rectangle2D rec = new Rectangle2D.Double(sizeOfTimesOFDay.getWidth(),
+                            (sizeOfTimesOFDay.getHeight()/2) + yPosition , eventsPanel.getWidth(), 35);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.fill(rec);
             }
         }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+//        Component[] events = eventsPanel.getComponents();
+//        ArrayList<Event> dayEvents = null;
+//        for (Day day : calendarContent.getCalendarEvents()){
+//            if (day.getDate().isEqual(currentDay)) {
+//                dayEvents = day.getDayEvents();     //if equal day it finds existing events
+//            }
+//        }
+//        if (dayEvents != null) {    //paint current events
+//            for (Event event : dayEvents) {
+//                int starting = event.getStartingTime().getHour();
+//                int ending = event.getEndingTime().getHour();
+//                int titlePosition = starting;
+//                while (starting < ending) {
+//                    if (!colorChange) {
+//                        events[starting].setBackground(Color.ORANGE);
+//                    }else{
+//                        events[starting].setBackground(new Color(247, 176, 45));
+//                    }
+//                    JLabel title2 = (JLabel) events[starting].getComponentAt(0,30);
+//                    title2.setBorder(null);
+//                    starting++;
+//                }
+//                JLabel title = (JLabel) events[titlePosition].getComponentAt(0,30);
+//                title.setText(event.getEventTitle());
+//                if (dayEvents.size() > 1) {
+//                    colorChange = !colorChange;
+//                }
+//            }
+//        }
     }
 }
