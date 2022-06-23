@@ -120,7 +120,6 @@ public class DayView extends JPanel implements ChangeListener {
                 float eventTitleXPosition = (float) rec.getCenterX();
                 float eventTitleYPosition = (float) rec.getCenterY();
                 g2.setColor(Color.BLACK);
-                System.out.println(eventTitleXPosition);
                 g2.drawString(event.getEventTitle(), eventTitleXPosition, eventTitleYPosition);
             }
         }
